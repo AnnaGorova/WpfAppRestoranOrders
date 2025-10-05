@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfAppRestoranOrder.Data
 {
-    internal class DatabaseContext
+    public class DatabaseContext
     {
     }
 }

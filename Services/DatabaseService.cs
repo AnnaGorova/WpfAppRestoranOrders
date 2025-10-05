@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfAppRestoranOrder.Services
 {
-    internal class DatabaseService
+    public class DatabaseService
     {
     }
 }
