@@ -15,7 +15,7 @@ namespace WpfAppRestoranOrder.Models
         public List<MenuItem> Items { get; set; } = new List<MenuItem>();
 
 
-        public string CustomerName { get; set; }
+        public string CustomName { get; set; }
         public string PhoneNumber   { get; set; }
         public string DeliveryAddress { get; set; }
 

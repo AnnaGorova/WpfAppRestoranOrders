@@ -30,7 +30,7 @@ namespace WpfAppRestoranOrder.Services
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    using (var command = new SqlCommand(sqlScript, connection))  // ✅ Використовуємо SqlCommand
+                    using (var command = new SqlCommand(sqlScript, connection))  
                     {
                         command.ExecuteNonQuery();
                     }
@@ -117,7 +117,7 @@ namespace WpfAppRestoranOrder.Services
                         OrderDate = (DateTime)reader["OrderDate"],
                         Status = (OrderStatus)Enum.Parse(typeof(OrderStatus), (string)reader["Status"]),
                         TotalAmount = (decimal)reader["TotalAmount"],
-                        CustomName = (string)reader["CustomName"],  // ✅ Тепер правильно
+                        CustomName = (string)reader["CustomName"], 
                         PhoneNumber = (string)reader["PhoneNumber"],
                         DeliveryAddress = reader["DeliveryAddress"] as string ?? ""
                     });
