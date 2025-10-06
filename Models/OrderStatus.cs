@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace WpfAppRestoranOrder.Models
 {
-    internal class OrderStatus
+    public enum OrderStatus
     {
+        New,
+        InProgress,
+        Ready,
+        Completed,    // видано замовнику
+        Cancelled
     }
 }
