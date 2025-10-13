@@ -14,5 +14,6 @@ namespace WpfAppRestoranOrder.Models
         public decimal Price { get; set; }
         public string Category { get; set; }
         public bool IsAvailable { get; set; } = true;  // чи є в наявності
+        public string ImageUrl { get; set; }
     }
 }

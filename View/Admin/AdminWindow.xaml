@@ -5,8 +5,190 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfAppRestoranOrder.Admin"
         mc:Ignorable="d"
-        Title="AdminWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Адмін-панель ресторану" Height="600" Width="900" Background="Gold">
+    
+    <Grid Margin="10">
+
+        <TabControl>
+
+            <!-- 🗃️ ВСІ ТАБЛИЦІ БАЗИ ДАНИХ -->
+            <TabItem Header="🗃️ Всі таблиці">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Всі таблиці бази даних" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                        <TabControl Background="PaleGoldenrod">
+                            <!-- 📂 КАТЕГОРІЇ -->
+                            <TabItem Header="📂 Категорії">
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="Таблиця Categories" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                                    <!-- Кнопки CRUD для категорій -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <Button x:Name="AddCategoryBtn" Content="➕ Додати категорію" Margin="5" Padding="10" Click="AddCategoryBtn_Click"/>
+                                        <Button x:Name="EditCategoryBtn" Content="✏️ Редагувати" Margin="5" Padding="10" Click="EditCategoryBtn_Click"/>
+                                        <Button x:Name="DeleteCategoryBtn" Content="🗑️ Видалити" Margin="5" Padding="10" Click="DeleteCategoryBtn_Click"/>
+                                        <Button x:Name="RefreshCategoriesBtn" Content="🔄 Оновити" Margin="5" Padding="10" Click="RefreshCategoriesBtn_Click"/>
+                                    </StackPanel>
+
+                                    <DataGrid x:Name="AllCategoriesGrid" AutoGenerateColumns="False" 
+                                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              SelectionMode="Single" SelectionUnit="FullRow">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="40"/>
+                                            <DataGridTemplateColumn Header="Зображення" Width="*" MinWidth="80">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Image Source="{Binding ImageUrl}" Width="100" Height="100" Stretch="UniformToFill"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*" MinWidth="200"/>
+                                            <DataGridTextColumn Header="Шлях до зображення" Binding="{Binding ImageUrl}" Width="*" MinWidth="250"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </TabItem>
+
+                            <!-- 🍽️ МЕНЮ -->
+                            <TabItem Header="🍽️ Меню">
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="Таблиця MenuItems" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                                    <!-- Кнопки CRUD для меню -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <Button x:Name="AddMenuItemBtn" Content="➕ Додати страву" Margin="5" Padding="10" Click="AddMenuItemBtn_Click"/>
+                                        <Button x:Name="EditMenuItemBtn" Content="✏️ Редагувати" Margin="5" Padding="10" Click="EditMenuItemBtn_Click"/>
+                                        <Button x:Name="DeleteMenuItemBtn" Content="🗑️ Видалити" Margin="5" Padding="10" Click="DeleteMenuItemBtn_Click"/>
+                                        <Button x:Name="RefreshMenuBtn" Content="🔄 Оновити" Margin="5" Padding="10" Click="RefreshMenuBtn_Click"/>
+                                    </StackPanel>
+
+                                    <DataGrid x:Name="AllMenuGrid" AutoGenerateColumns="False" 
+                                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              SelectionMode="Single" SelectionUnit="FullRow">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="40"/>
+                                            <DataGridTemplateColumn Header="Зображення" Width="*" MinWidth="80">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Image Source="{Binding ImageUrl}" Width="100" Height="100" Stretch="UniformToFill"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*" MinWidth="120"/>
+                                            <DataGridTextColumn Header="Опис" Binding="{Binding Description}" Width="*" MinWidth="200"/>
+                                            <DataGridTextColumn Header="Ціна" Binding="{Binding Price, StringFormat={}{0} грн}" Width="*" MinWidth="70"/>
+                                            <DataGridTextColumn Header="Категорія" Binding="{Binding Category}" Width="*" MinWidth="100"/>
+                                            <DataGridCheckBoxColumn Header="Доступно" Binding="{Binding IsAvailable}" Width="*" MinWidth="70"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </TabItem>
+
+                            <!-- 📋 ЗАМОВЛЕННЯ -->
+                            <TabItem Header="📋 Замовлення">
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="Таблиця Orders" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                                    <!-- Кнопки CRUD для замовлень -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <Button x:Name="AddOrderBtn" Content="➕ Додати замовлення" Margin="5" Padding="10" Click="AddOrderBtn_Click"/>
+                                        <Button x:Name="EditOrderBtn" Content="✏️ Редагувати" Margin="5" Padding="10" Click="EditOrderBtn_Click"/>
+                                        <Button x:Name="DeleteOrderBtn" Content="🗑️ Видалити" Margin="5" Padding="10" Click="DeleteOrderBtn_Click"/>
+                                        <Button x:Name="RefreshOrdersBtn" Content="🔄 Оновити" Margin="5" Padding="10" Click="RefreshOrdersBtn_Click"/>
+                                    </StackPanel>
+
+                                    <DataGrid x:Name="AllOrdersGrid" AutoGenerateColumns="False" 
+                                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              SelectionMode="Single" SelectionUnit="FullRow">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="40"/>
+                                            <DataGridTextColumn Header="Дата" Binding="{Binding OrderDate, StringFormat={}{0:dd.MM.yy HH:mm}}" Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="Клієнт" Binding="{Binding CustomerName}" Width="*" MinWidth="120"/>
+                                            <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}" Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="Сума" Binding="{Binding TotalAmount, StringFormat={}{0} грн}" Width="*" MinWidth="70"/>
+                                            <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*" MinWidth="80"/>
+                                            <DataGridTextColumn Header="Адреса" Binding="{Binding DeliveryAddress}" Width="*" MinWidth="150"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </TabItem>
+
+                            <!-- 🛒 ПОЗИЦІЇ ЗАМОВЛЕНЬ -->
+                            <TabItem Header="🛒 Позиції замовлень">
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="Таблиця OrderItems" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                                    <!-- Кнопки CRUD для позицій -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <Button x:Name="AddOrderItemBtn" Content="➕ Додати позицію" Margin="5" Padding="10" Click="AddOrderItemBtn_Click"/>
+                                        <Button x:Name="EditOrderItemBtn" Content="✏️ Редагувати" Margin="5" Padding="10" Click="EditOrderItemBtn_Click"/>
+                                        <Button x:Name="DeleteOrderItemBtn" Content="🗑️ Видалити" Margin="5" Padding="10" Click="DeleteOrderItemBtn_Click"/>
+                                        <Button x:Name="RefreshOrderItemsBtn" Content="🔄 Оновити" Margin="5" Padding="10" Click="RefreshOrderItemsBtn_Click"/>
+                                    </StackPanel>
+
+                                    <DataGrid x:Name="AllOrderItemsGrid" AutoGenerateColumns="False" 
+                                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              SelectionMode="Single" SelectionUnit="FullRow">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="40"/>
+                                            <DataGridTextColumn Header="ID замовлення" Binding="{Binding OrderId}" Width="*" MinWidth="80"/>
+                                            <DataGridTextColumn Header="ID страви" Binding="{Binding MenuItemId}" Width="*" MinWidth="70"/>
+                                            <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}" Width="*" MinWidth="70"/>
+                                            <DataGridTextColumn Header="Ціна" Binding="{Binding UnitPrice, StringFormat={}{0} грн}" Width="*" MinWidth="70"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </TabItem>
+
+                            <!-- 📊 СТАТИСТИКА ТАБЛИЦЬ -->
+                            <TabItem Header="📊 Статистика таблиць">
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="Статистика таблиць" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                                    <WrapPanel>
+                                        <Border BorderBrush="LightGray" BorderThickness="1" Margin="5" Padding="10" Background="#FFF0F8FF">
+                                            <StackPanel>
+                                                <TextBlock Text="Категорії" FontWeight="Bold"/>
+                                                <TextBlock x:Name="CategoriesCount" Text="0" FontSize="14" Foreground="Blue"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border BorderBrush="LightGray" BorderThickness="1" Margin="5" Padding="10" Background="#FFF0FFF0">
+                                            <StackPanel>
+                                                <TextBlock Text="Страви" FontWeight="Bold"/>
+                                                <TextBlock x:Name="MenuItemsCount" Text="0" FontSize="14" Foreground="Green"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border BorderBrush="LightGray" BorderThickness="1" Margin="5" Padding="10" Background="#FFFFF0F5">
+                                            <StackPanel>
+                                                <TextBlock Text="Замовлення" FontWeight="Bold"/>
+                                                <TextBlock x:Name="OrdersCount" Text="0" FontSize="14" Foreground="Orange"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border BorderBrush="LightGray" BorderThickness="1" Margin="5" Padding="10" Background="#FFFFF8DC">
+                                            <StackPanel>
+                                                <TextBlock Text="Позиції" FontWeight="Bold"/>
+                                                <TextBlock x:Name="OrderItemsCount" Text="0" FontSize="14" Foreground="Purple"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </WrapPanel>
+
+                                    <Button x:Name="RefreshAllDataBtn" Content="🔄 Оновити всі дані" 
+                                            Click="RefreshAllDataBtn_Click" Margin="0,10,0,0" 
+                                            Padding="10" Width="200" HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

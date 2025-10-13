@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.IO;
 using WpfAppRestoranOrder.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Linq.Expressions;
 
 namespace WpfAppRestoranOrder.Services
 {
@@ -30,36 +25,36 @@ namespace WpfAppRestoranOrder.Services
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    using (var command = new SqlCommand(sqlScript, connection))  
+                    using (var command = new SqlCommand(sqlScript, connection))
                     {
                         command.ExecuteNonQuery();
                     }
                 }
-
-                Console.WriteLine("Базу даних успішно створено!");
+                
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Помилка: {ex.Message}");
+               
             }
         }
 
-        public List<Models.Category> GetCategories()
+        public List<Category> GetCategories()
         {
-            var categories = new List<Models.Category>();
+            var categories = new List<Category>();
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Name FROM Categories", connection);
+                var command = new SqlCommand("SELECT Id, Name, ImageUrl FROM Categories", connection);
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    categories.Add(new Models.Category
+                    categories.Add(new Category
                     {
                         Id = (int)reader["Id"],
-                        Name = (string)reader["Name"]
+                        Name = (string)reader["Name"],
+                        ImageUrl = reader["ImageUrl"] as string ?? ""
                     });
                 }
             }
@@ -67,57 +62,61 @@ namespace WpfAppRestoranOrder.Services
             return categories;
         }
 
-
         public List<MenuItem> GetMenu()
         {
-            var menuItems = new List<MenuItem>();  
+            var menuItems = new List<MenuItem>();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
                 var command = new SqlCommand(@"
-                        SELECT m.Id, m.Name, m.Price, m.Description, m.IsAvailable, c.Name as Category 
-                        FROM MenuItems m 
-                        JOIN Categories c ON m.CategoryId = c.Id", connection);
+                    SELECT m.Id, m.Name, m.Price, m.Description, m.IsAvailable, m.ImageUrl, c.Name as Category 
+                    FROM MenuItems m 
+                    JOIN Categories c ON m.CategoryId = c.Id", connection);
 
-                var reader = command.ExecuteReader();
-                while (reader.Read())
+                using (var reader = command.ExecuteReader())
                 {
-                    var menuItem = new MenuItem  
+                    while (reader.Read())
                     {
-                        Id = (int)reader["Id"],
-                        Name = (string)reader["Name"],
-                        Price = (decimal)reader["Price"],
-                        Description = reader["Description"] as string ?? "",
-                        Category = (string)reader["Category"],
-                        IsAvailable = (bool)reader["IsAvailable"]
-                    };
-
-                    menuItems.Add(menuItem);  
+                        var menuItem = new MenuItem
+                        {
+                            Id = (int)reader["Id"],
+                            Name = (string)reader["Name"],
+                            Price = (decimal)reader["Price"],
+                            Description = reader["Description"] as string ?? "",
+                            Category = (string)reader["Category"],
+                            IsAvailable = (bool)reader["IsAvailable"],
+                            ImageUrl = reader["ImageUrl"] as string ?? ""
+                        };
+                        menuItems.Add(menuItem);
+                    }
                 }
             }
 
             return menuItems;
         }
 
-
-        public List<Models.Order> GetOrders()
+        public List<Order> GetOrders()
         {
-            var orders = new List<Models.Order>();
+            var orders = new List<Order>();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, OrderDate, Status, TotalAmount, CustomName, PhoneNumber, DeliveryAddress FROM Orders", connection);
+                var command = new SqlCommand(@"
+                    SELECT o.Id, o.OrderDate, o.Status, o.TotalAmount, 
+                    o.CustomerName, o.PhoneNumber, o.DeliveryAddress 
+                    FROM Orders o", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    orders.Add(new Models.Order
+                    orders.Add(new Order
                     {
                         Id = (int)reader["Id"],
                         OrderDate = (DateTime)reader["OrderDate"],
                         Status = (OrderStatus)Enum.Parse(typeof(OrderStatus), (string)reader["Status"]),
                         TotalAmount = (decimal)reader["TotalAmount"],
-                        CustomName = (string)reader["CustomName"], 
+                        CustomerName = (string)reader["CustomerName"],
                         PhoneNumber = (string)reader["PhoneNumber"],
                         DeliveryAddress = reader["DeliveryAddress"] as string ?? ""
                     });
@@ -126,11 +125,9 @@ namespace WpfAppRestoranOrder.Services
             return orders;
         }
 
-
-
-        public List<Models.OrderItem> GetOrderItems()  
+        public List<OrderItem> GetOrderItems()
         {
-            var orderItems = new List<Models.OrderItem>();
+            var orderItems = new List<OrderItem>();
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -140,7 +137,7 @@ namespace WpfAppRestoranOrder.Services
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    orderItems.Add(new Models.OrderItem  
+                    orderItems.Add(new OrderItem
                     {
                         Id = (int)reader["Id"],
                         OrderId = (int)reader["OrderId"],
@@ -154,5 +151,9 @@ namespace WpfAppRestoranOrder.Services
             return orderItems;
         }
 
+        public string GetConnectionString()
+        {
+            return _connectionString;
+        }
     }
 }
