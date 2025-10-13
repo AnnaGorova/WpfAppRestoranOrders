@@ -8,13 +8,13 @@ CREATE TABLE categories (
 );
 GO 
 
-INSERT INTO categories  VALUES ('Піца');
+INSERT INTO categories  VALUES ('РџС–С†Р°');
 GO 
-INSERT INTO categories  VALUES ('Бургери');
+INSERT INTO categories  VALUES ('Р‘СѓСЂРіРµСЂРё');
 GO 
-INSERT INTO categories  VALUES ('Салати');
+INSERT INTO categories  VALUES ('РЎР°Р»Р°С‚Рё');
 GO 
-INSERT INTO categories  VALUES ('Десерти');
+INSERT INTO categories  VALUES ('Р”РµСЃРµСЂС‚Рё');
 GO 
 
 CREATE TABLE menuItems (
@@ -30,38 +30,38 @@ CREATE TABLE menuItems (
 GO 
 
 INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Тірамісу', 'Класичний італійський десерт з маскарпоне та кавою', 89.00, 4, 'https://lasunka.com/s165-prew.jpg');
+('РўС–СЂР°РјС–СЃСѓ', 'РљР»Р°СЃРёС‡РЅРёР№ С–С‚Р°Р»С–Р№СЃСЊРєРёР№ РґРµСЃРµСЂС‚ Р· РјР°СЃРєР°СЂРїРѕРЅРµ С‚Р° РєР°РІРѕСЋ', 89.00, 4, 'https://lasunka.com/s165-prew.jpg');
 GO 
 INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Чізкейк Нью-Йорк', 'Ніжний чізкейк з ягідним соусом', 79.00, 4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnoJJRbsaYLx_EQHAuMyasWc5pPi69z0K1ow&s')
+('Р§С–Р·РєРµР№Рє РќСЊСЋ-Р™РѕСЂРє', 'РќС–Р¶РЅРёР№ С‡С–Р·РєРµР№Рє Р· СЏРіС–РґРЅРёРј СЃРѕСѓСЃРѕРј', 79.00, 4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnoJJRbsaYLx_EQHAuMyasWc5pPi69z0K1ow&s')
 GO 
 INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Шоколадний фондан', 'Теплий шоколадний кекс з рідкою начинкою', 69.00, 4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQorpJnieWO0imrpB8qOX88Y6-8xl6dLbf-Uw&s')
-GO 
-
-INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Морозиво', '3 кульки морозива на вибір: ваніль, шоколад, полуниця', 59.00, 4, 'https://i.evrasia.in.ua/data/1400_0/products/nytznciVTAtFnjq1tmKAQmhWXka2TGcX3kwXRJCb.webp')
-GO 
-
-
-INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Цезар з куркою', 'Салат ромен, куряче філе, крутони, пармезан, соус Цезар', 149.00, 3, 'https://klopotenko.com/wp-content/uploads/2022/01/cezar-z-kyrkou-i-tomatamu_sitewebukr-1000x600.jpg?v=1720546600')
-GO 
-INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Грецький салат', 'Помідори, огірки, оливки, сир фета, оливкова олія', 129.00, 3, 'https://horodok.city/upload/article/kAhOV8LQStsPeOhgTUxr.jpg')
-GO 
-INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Класичний бургер', 'Яловича котлета, сир чеддер, салат, помідор, цибуля', 129.00, 2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyLwRCUSl9Y3dVDoJYl1aprxiBScB1V5ZdBg&s')
-GO 
-INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Чізбургер', 'Подвійна яловича котлета, сир чеддер, бекон, соус BBQ', 169.00, 2, 'https://sfood.in.ua/wp-content/uploads/2020/10/B-3-e1630391342951.jpg')
+('РЁРѕРєРѕР»Р°РґРЅРёР№ С„РѕРЅРґР°РЅ', 'РўРµРїР»РёР№ С€РѕРєРѕР»Р°РґРЅРёР№ РєРµРєСЃ Р· СЂС–РґРєРѕСЋ РЅР°С‡РёРЅРєРѕСЋ', 69.00, 4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQorpJnieWO0imrpB8qOX88Y6-8xl6dLbf-Uw&s')
 GO 
 
 INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Маргарита', 'Класична італійська піца з томатним соусом, моцарелою та свіжим базиліком', 199.00, 1, 'https://klopotenko.com/wp-content/uploads/2023/03/pitsa-marharyta_sitewebukr-img-1000x600.jpg?v=1720545473')
+('РњРѕСЂРѕР·РёРІРѕ', '3 РєСѓР»СЊРєРё РјРѕСЂРѕР·РёРІР° РЅР° РІРёР±С–СЂ: РІР°РЅС–Р»СЊ, С€РѕРєРѕР»Р°Рґ, РїРѕР»СѓРЅРёС†СЏ', 59.00, 4, 'https://i.evrasia.in.ua/data/1400_0/products/nytznciVTAtFnjq1tmKAQmhWXka2TGcX3kwXRJCb.webp')
+GO 
+
+
+INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
+('Р¦РµР·Р°СЂ Р· РєСѓСЂРєРѕСЋ', 'РЎР°Р»Р°С‚ СЂРѕРјРµРЅ, РєСѓСЂСЏС‡Рµ С„С–Р»Рµ, РєСЂСѓС‚РѕРЅРё, РїР°СЂРјРµР·Р°РЅ, СЃРѕСѓСЃ Р¦РµР·Р°СЂ', 149.00, 3, 'https://klopotenko.com/wp-content/uploads/2022/01/cezar-z-kyrkou-i-tomatamu_sitewebukr-1000x600.jpg?v=1720546600')
 GO 
 INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
-('Пепероні', 'Піца з салямі пепероні, моцарелою та томатним соусом', 229.00, 1, 'https://roll-club.kh.ua/wp-content/uploads/2022/12/5.jpg')
+('Р“СЂРµС†СЊРєРёР№ СЃР°Р»Р°С‚', 'РџРѕРјС–РґРѕСЂРё, РѕРіС–СЂРєРё, РѕР»РёРІРєРё, СЃРёСЂ С„РµС‚Р°, РѕР»РёРІРєРѕРІР° РѕР»С–СЏ', 129.00, 3, 'https://horodok.city/upload/article/kAhOV8LQStsPeOhgTUxr.jpg')
+GO 
+INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
+('РљР»Р°СЃРёС‡РЅРёР№ Р±СѓСЂРіРµСЂ', 'РЇР»РѕРІРёС‡Р° РєРѕС‚Р»РµС‚Р°, СЃРёСЂ С‡РµРґРґРµСЂ, СЃР°Р»Р°С‚, РїРѕРјС–РґРѕСЂ, С†РёР±СѓР»СЏ', 129.00, 2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyLwRCUSl9Y3dVDoJYl1aprxiBScB1V5ZdBg&s')
+GO 
+INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
+('Р§С–Р·Р±СѓСЂРіРµСЂ', 'РџРѕРґРІС–Р№РЅР° СЏР»РѕРІРёС‡Р° РєРѕС‚Р»РµС‚Р°, СЃРёСЂ С‡РµРґРґРµСЂ, Р±РµРєРѕРЅ, СЃРѕСѓСЃ BBQ', 169.00, 2, 'https://sfood.in.ua/wp-content/uploads/2020/10/B-3-e1630391342951.jpg')
+GO 
+
+INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
+('РњР°СЂРіР°СЂРёС‚Р°', 'РљР»Р°СЃРёС‡РЅР° С–С‚Р°Р»С–Р№СЃСЊРєР° РїС–С†Р° Р· С‚РѕРјР°С‚РЅРёРј СЃРѕСѓСЃРѕРј, РјРѕС†Р°СЂРµР»РѕСЋ С‚Р° СЃРІС–Р¶РёРј Р±Р°Р·РёР»С–РєРѕРј', 199.00, 1, 'https://klopotenko.com/wp-content/uploads/2023/03/pitsa-marharyta_sitewebukr-img-1000x600.jpg?v=1720545473')
+GO 
+INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
+('РџРµРїРµСЂРѕРЅС–', 'РџС–С†Р° Р· СЃР°Р»СЏРјС– РїРµРїРµСЂРѕРЅС–, РјРѕС†Р°СЂРµР»РѕСЋ С‚Р° С‚РѕРјР°С‚РЅРёРј СЃРѕСѓСЃРѕРј', 229.00, 1, 'https://roll-club.kh.ua/wp-content/uploads/2022/12/5.jpg')
 GO 
 
 
@@ -78,22 +78,22 @@ CREATE TABLE orders (
 GO 
 
 INSERT INTO orders (OrderDate, Status, CustomerName, PhoneNumber, TotalAmount, DeliveryAddress) VALUES
-('2025-10-07 16:20:00', 'New', 'Петро Іваненко', '+380441112233', 150.00, 'вул. Лісова, 5')
+('2025-10-07 16:20:00', 'New', 'РџРµС‚СЂРѕ Р†РІР°РЅРµРЅРєРѕ', '+380441112233', 150.00, 'РІСѓР». Р›С–СЃРѕРІР°, 5')
 GO 
 INSERT INTO orders (OrderDate, Status, CustomerName, PhoneNumber, TotalAmount, DeliveryAddress) VALUES
-('2025-10-07 13:10:00', 'Cancelled', 'Софія Мельник', '+380639998877', 89.00, NULL);
+('2025-10-07 13:10:00', 'Cancelled', 'РЎРѕС„С–СЏ РњРµР»СЊРЅРёРє', '+380639998877', 89.00, NULL);
 GO 
 INSERT INTO orders (OrderDate, Status, TotalAmount, CustomerName, PhoneNumber, DeliveryAddress) VALUES 
-('2025-10-07 14:30:00', 'InProgress', 447.00, 'Іван Петренко', '+380991234567', 'вул. Хрещатик, 25, кв. 42');
+('2025-10-07 14:30:00', 'InProgress', 447.00, 'Р†РІР°РЅ РџРµС‚СЂРµРЅРєРѕ', '+380991234567', 'РІСѓР». РҐСЂРµС‰Р°С‚РёРє, 25, РєРІ. 42');
 GO 
 INSERT INTO orders (OrderDate, Status, TotalAmount, CustomerName, PhoneNumber, DeliveryAddress) VALUES 
-('2025-10-06 19:15:00', 'Completed', 328.00, 'Марія Коваленко', '+380667894561', NULL);
+('2025-10-06 19:15:00', 'Completed', 328.00, 'РњР°СЂС–СЏ РљРѕРІР°Р»РµРЅРєРѕ', '+380667894561', NULL);
 GO 
 INSERT INTO orders (CustomerName, PhoneNumber, DeliveryAddress, TotalAmount) VALUES 
-('Олександр Шевченко', '+380931112233', 'просп. Перемоги, 10, кв. 17', 189.00);
+('РћР»РµРєСЃР°РЅРґСЂ РЁРµРІС‡РµРЅРєРѕ', '+380931112233', 'РїСЂРѕСЃРї. РџРµСЂРµРјРѕРіРё, 10, РєРІ. 17', 189.00);
 GO 
 INSERT INTO orders (OrderDate, Status, CustomerName, PhoneNumber, TotalAmount) VALUES 
-('2025-10-07 15:45:00', 'Ready', 'Наталія Бойко', '+380509876543', 275.50);
+('2025-10-07 15:45:00', 'Ready', 'РќР°С‚Р°Р»С–СЏ Р‘РѕР№РєРѕ', '+380509876543', 275.50);
 GO 
 
 CREATE TABLE orderItems (
@@ -107,13 +107,13 @@ CREATE TABLE orderItems (
 );
 GO 
 INSERT INTO orderItems (OrderId, MenuItemId, Quantity, UnitPrice) VALUES
-(1, 1, 1, 199.00);  -- Маргарита
+(1, 1, 1, 199.00);  -- РњР°СЂРіР°СЂРёС‚Р°
 GO 
 INSERT INTO orderItems (OrderId, MenuItemId, Quantity, UnitPrice) VALUES
-(1, 6, 2, 129.00); -- Класичний бургер
+(1, 6, 2, 129.00); -- РљР»Р°СЃРёС‡РЅРёР№ Р±СѓСЂРіРµСЂ
 GO 
 INSERT INTO orderItems (OrderId, MenuItemId, Quantity, UnitPrice) VALUES
-(2, 3, 2, 129.00); -- Тірамісу
+(2, 3, 2, 129.00); -- РўС–СЂР°РјС–СЃСѓ
 GO 
    
 
@@ -126,10 +126,10 @@ GO
 
 
 --ALTER TABLE menuItems 
---ADD ImageUrl NVARCHAR(500) NULL;  -- вже внесено в таблицю 
+--ADD ImageUrl NVARCHAR(500) NULL;  -- РІР¶Рµ РІРЅРµСЃРµРЅРѕ РІ С‚Р°Р±Р»РёС†СЋ 
 
 --ALTER TABLE categories 
---ADD ImageUrl NVARCHAR(500) NULL; -- вже внесено в таблицю 
+--ADD ImageUrl NVARCHAR(500) NULL; -- РІР¶Рµ РІРЅРµСЃРµРЅРѕ РІ С‚Р°Р±Р»РёС†СЋ 
 
 
 
