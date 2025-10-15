@@ -81,7 +81,7 @@
                                             <DataGridTextColumn Header="Опис" Binding="{Binding Description}" Width="*" MinWidth="200"/>
                                             <DataGridTextColumn Header="Ціна" Binding="{Binding Price, StringFormat={}{0} грн}" Width="*" MinWidth="70"/>
                                             <DataGridTextColumn Header="Категорія" Binding="{Binding Category}" Width="*" MinWidth="100"/>
-                                            <DataGridCheckBoxColumn Header="Доступно" Binding="{Binding IsAvailable}" Width="*" MinWidth="70"/>
+                                            <DataGridCheckBoxColumn Header="Доступно" Binding="{Binding IsAvailable}" Width="*" MinWidth="70" IsReadOnly="True"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </StackPanel>

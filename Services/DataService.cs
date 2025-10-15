@@ -83,6 +83,34 @@ namespace WpfAppRestoranOrder.Services
             return result;
         }
 
+        public bool AddMenuItem(MenuItem menuItem)
+        {
+           bool result = _dbService.AddMenuItem(menuItem);
+            if (result)
+            {
+                MenuItems = _dbService.GetMenu();
+            }
+            return result;
+        }
 
+        public bool UpdateMenuItem(MenuItem menuItem)
+        {
+            bool result = _dbService.UpdateMenuItem(menuItem);
+            if (result)
+            {
+                MenuItems = _dbService.GetMenu();
+            }
+            return result;
+        }
+
+        public bool DeleteMenuItem(int menuItemId)
+        {
+            bool result = _dbService.DeleteMenuItem(menuItemId);
+            if (result)
+            {
+                MenuItems = _dbService.GetMenu();
+            }
+            return result;
+        }
     }
 }

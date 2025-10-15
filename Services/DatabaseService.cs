@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Windows.Documents;
 using WpfAppRestoranOrder.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WpfAppRestoranOrder.Services
 {
@@ -222,6 +223,89 @@ namespace WpfAppRestoranOrder.Services
                 }
             }
             catch (Exception ex) 
+            {
+                return false;
+            }
+        }
+
+
+        public bool AddMenuItem(MenuItem menuItem)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand(
+                        "INSERT INTO MenuItems (Name, Description, Price, " +
+                        "CategoryId, IsAvailable, ImageUrl) " +
+                        "VALUES (@Name, @Description, @Price, " +
+                        "(SELECT Id FROM Categories WHERE Name = @Category), @IsAvailable, @ImageUrl)",
+                        connection);
+
+                    command.Parameters.AddWithValue("@Name", menuItem.Name);
+                    command.Parameters.AddWithValue("@Description", menuItem.Description ?? "");
+                    command.Parameters.AddWithValue("@Price", menuItem.Price);
+                    command.Parameters.AddWithValue("@Category", menuItem.Category);
+                    command.Parameters.AddWithValue("@IsAvailable", menuItem.IsAvailable);
+                    command.Parameters.AddWithValue("@ImageUrl", menuItem.ImageUrl ?? "");
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateMenuItem(MenuItem menuItem)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand(
+                        "UPDATE MenuItems SET Name = @Name, Description = @Description, " +
+                        "Price = @Price, CategoryId = " +
+                        "(SELECT Id FROM Categories WHERE Name = @Category), IsAvailable = @IsAvailable, ImageUrl = @ImageUrl WHERE Id = @Id",
+                        connection);
+
+                    command.Parameters.AddWithValue("@Id", menuItem.Id);
+                    command.Parameters.AddWithValue("@Name", menuItem.Name);
+                    command.Parameters.AddWithValue("@Description", menuItem.Description ?? "");
+                    command.Parameters.AddWithValue("@Price", menuItem.Price);
+                    command.Parameters.AddWithValue("@Category", menuItem.Category);
+                    command.Parameters.AddWithValue("@IsAvailable", menuItem.IsAvailable);
+                    command.Parameters.AddWithValue("@ImageUrl", menuItem.ImageUrl ?? "");
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteMenuItem(int menuItemId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand("DELETE FROM MenuItems WHERE Id = @Id", connection);
+                    command.Parameters.AddWithValue("@Id", menuItemId);
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
             {
                 return false;
             }

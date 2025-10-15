@@ -172,19 +172,108 @@ namespace WpfAppRestoranOrder.Admin
             _dataService.RefreshData();
             AllCategoriesGrid.ItemsSource = _dataService.Categories;
         }
-        
+
 
         // 🍽️ МЕНЮ - CRUD
         private void AddMenuItemBtn_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Додати страву - функція в розробці", "Інформація");
+            string name = Interaction.InputBox("Введіть назву страви: ");
+            if (string.IsNullOrEmpty(name)) return;
+
+            string description = Interaction.InputBox("Введіть опис страви:  ");
+
+            string priceInput = Interaction.InputBox("Введіть ціну страви: ");
+            if (!decimal.TryParse(priceInput, out decimal price))
+            {
+                MessageBox.Show("Введіть корректну ціну!");
+                return;
+            }
+
+            string category = Interaction.InputBox("Ведіть назву категорії");
+            if (string.IsNullOrEmpty(category)) return;
+
+            string imageUrl = Interaction.InputBox("Введіть шлях до зображення або залиште поле пустим: ");
+
+            var availabilityResult = MessageBox.Show("Страва доступна для замовлення?", "Доступність",
+                  MessageBoxButton.YesNo, MessageBoxImage.Question);
+            bool isAvailable = availabilityResult == MessageBoxResult.Yes;
+
+
+            var newMenuItem = new Models.MenuItem
+            {
+                Name = name,
+                Description = description ?? "",
+                Price = price,
+                Category = category,
+                IsAvailable = isAvailable,
+                ImageUrl = imageUrl ?? ""
+            };
+
+
+            bool success = _dataService.AddMenuItem(newMenuItem);
+            if (success)
+            {
+                MessageBox.Show($"Страву {name} успішно додано: {price} грн\nКатегорія -> {category}");
+                RefreshMenu();
+            }
+            else
+            {
+                MessageBox.Show("Виникла помилка при додаванні страви");            }
+
+           
+
         }
+
 
         private void EditMenuItemBtn_Click(object sender, RoutedEventArgs e)
         {
             if (AllMenuGrid.SelectedItem is Models.MenuItem selectedItem)
             {
-                MessageBox.Show($"Редагувати страву: {selectedItem.Name}", "Інформація");
+                string newName = Interaction.InputBox("Введіть нову назву страви:", "Редагувати страву", selectedItem.Name);
+                if (string.IsNullOrEmpty(newName)) return;
+
+                string newDescription = Interaction.InputBox("Введіть новий опис страви:", "Опис страви", selectedItem.Description);
+
+                string newPriceInput = Interaction.InputBox("Введіть нову ціну страви:", "Ціна страви", selectedItem.Price.ToString());
+                if (!decimal.TryParse(newPriceInput, out decimal newPrice))
+                {
+                    MessageBox.Show("Введіть коректну ціну!", "Помилка");
+                    return;
+                }
+
+                string newCategory = Interaction.InputBox("Введіть нову категорію:", "Категорія страви", selectedItem.Category);
+                if (string.IsNullOrEmpty(newCategory)) return;
+
+                string newImageUrl = Interaction.InputBox("Введіть новий шлях до зображення:", "Зображення страви", selectedItem.ImageUrl);
+
+                
+                var availabilityResult = MessageBox.Show("Страва доступна для замовлення?", "Доступність",
+                    MessageBoxButton.YesNo,
+                    selectedItem.IsAvailable ? MessageBoxImage.Question : MessageBoxImage.Warning);
+                bool newIsAvailable = availabilityResult == MessageBoxResult.Yes;
+
+
+                var updatedMenuItem = new Models.MenuItem
+                {
+                    Id = selectedItem.Id,
+                    Name = newName,
+                    Description = newDescription ?? "",
+                    Price = newPrice,
+                    Category = newCategory,
+                    IsAvailable = newIsAvailable,
+                    ImageUrl = newImageUrl ?? ""
+                };
+
+                bool success = _dataService.UpdateMenuItem(updatedMenuItem);
+                if (success)
+                {
+                    MessageBox.Show($"Страву '{newName}' успішно оновлено!", "Успіх");
+                    RefreshMenu();
+                }
+                else
+                {
+                    MessageBox.Show("Помилка при оновленні страви", "Помилка");
+                }
             }
             else
             {
@@ -196,26 +285,45 @@ namespace WpfAppRestoranOrder.Admin
         {
             if (AllMenuGrid.SelectedItem is Models.MenuItem selectedItem)
             {
-                var result = MessageBox.Show($"Видалити страву '{selectedItem.Name}'?",
-                    "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show(
+                    $"Ви впевнені, що хочете видалити страву '{selectedItem.Name}'?",
+                    "Підтвердження видалення",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show($"Страва '{selectedItem.Name}' видалена", "Інформація");
+                    bool success = _dataService.DeleteMenuItem(selectedItem.Id);
+
+                    if (success)
+                    {
+                        
+                        RefreshMenu();
+                        MessageBox.Show($"Страва '{selectedItem.Name}' успішно видалена!", "Успіх");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Помилка при видаленні страви");
+                    }
                 }
             }
             else
             {
-                MessageBox.Show("Виберіть страву для видалення", "Попередження");
+                MessageBox.Show("Виберіть страву для видалення");
             }
         }
-
         private void RefreshMenuBtn_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshMenu();
+        }
+        private void RefreshMenu()
         {
             _dataService.RefreshData();
             AllMenuGrid.ItemsSource = _dataService.MenuItems;
+            UpdateTablesStatistics();
         }
-        
+
 
         // 📋 ЗАМОВЛЕННЯ - CRUD
         private void AddOrderBtn_Click(object sender, RoutedEventArgs e)
