@@ -40,11 +40,11 @@
                                             <DataGridTemplateColumn Header="Зображення" Width="*" MinWidth="80">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <Image Source="{Binding ImageUrl}" Width="100" Height="100" Stretch="UniformToFill"/>
+                                                        <Image Source="{Binding ImageUrl}" Width="150" Height="150" Stretch="Uniform"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="Назва" Binding="{Binding Name}" Width="*" MinWidth="200"/>
+                                            <DataGridTextColumn Header="Назва" Binding="{Binding Name}" FontSize="16" Width="*" MinWidth="200"/>
                                             <DataGridTextColumn Header="Шлях до зображення" Binding="{Binding ImageUrl}" Width="*" MinWidth="250"/>
                                         </DataGrid.Columns>
                                     </DataGrid>

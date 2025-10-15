@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfAppRestoranOrder.Models;
 using WpfAppRestoranOrder.Services;
+using Microsoft.VisualBasic;
 
 namespace WpfAppRestoranOrder.Admin
 {
@@ -69,18 +70,63 @@ namespace WpfAppRestoranOrder.Admin
         // 📂 КАТЕГОРІЇ - CRUD
         private void AddCategoryBtn_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Додати категорію - функція в розробці", "Інформація");
+            var name = Interaction.InputBox("Ввведіть назву категорії: ");
+
+            if (string.IsNullOrEmpty(name)) return;
+
+            
+            var imageUrl = Interaction.InputBox("Введіть шлях до зображаення або залиште поле пустим: ");
+
+
+            var success = _dataService.AddCategory(new Category { Name = name, ImageUrl = imageUrl });
+            if (success)
+            {
+                _dataService.RefreshData();
+                AllCategoriesGrid.ItemsSource = _dataService.Categories;
+                MessageBox.Show($"Категорію {name} успішно додано!");
+            }
+            else
+            {
+                MessageBox.Show($"Error");
+            }
         }
 
         private void EditCategoryBtn_Click(object sender, RoutedEventArgs e)
         {
             if (AllCategoriesGrid.SelectedItem is Category selectedCategory)
             {
-                MessageBox.Show($"Редагувати категорію: {selectedCategory.Name}", "Інформація");
+                string newName = Interaction.InputBox(
+                    "Введіть нову назву категорії: ", "Редагувати категорію",
+                    selectedCategory.Name);
+                if (string.IsNullOrEmpty(newName)) return;
+
+                string newImageUrl = Interaction.InputBox("Введіть шлях до зображення: ", 
+                    selectedCategory.ImageUrl);
+
+                var updateCategory = new Category
+                {
+                    Id = selectedCategory.Id,
+                    Name = newName,
+                    ImageUrl = newImageUrl?.Trim() ?? ""
+                };
+
+                bool success = _dataService.UpdateCategory(updateCategory);
+
+                if (success) 
+                    {
+                        _dataService.RefreshData();
+                        AllCategoriesGrid.ItemsSource = _dataService.Categories;
+                        MessageBox.Show($"Категорію {newName} успішно оновлено!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Помилка при оновленні категорії");
+                    }
+                   
             }
             else
             {
-                MessageBox.Show("Виберіть категорію для редагування", "Попередження");
+                MessageBox.Show("Виберіть категорію для редагування");
             }
         }
 
@@ -88,17 +134,36 @@ namespace WpfAppRestoranOrder.Admin
         {
             if (AllCategoriesGrid.SelectedItem is Category selectedCategory)
             {
-                var result = MessageBox.Show($"Видалити категорію '{selectedCategory.Name}'?",
-                    "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                
+                var result = MessageBox.Show(
+                    $"Ви впевнені, що хочете видалити категорію '{selectedCategory.Name}'?",
+                    "Підтвердження видалення",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
 
+                
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show($"Категорія '{selectedCategory.Name}' видалена", "Інформація");
+                    
+                    bool success = _dataService.DeleteCategory(selectedCategory.Id);
+
+                    if (success)
+                    {
+                        
+                        _dataService.RefreshData();
+                        AllCategoriesGrid.ItemsSource = _dataService.Categories;
+                        MessageBox.Show($"Категорію '{selectedCategory.Name}' успішно видалено!", "Успіх");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Не вдалося видалити категорію", "Помилка");
+                    }
                 }
             }
             else
             {
-                MessageBox.Show("Виберіть категорію для видалення", "Попередження");
+                MessageBox.Show("Будь ласка, виберіть категорію для видалення", "Попередження");
             }
         }
 

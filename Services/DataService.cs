@@ -51,5 +51,38 @@ namespace WpfAppRestoranOrder.Services
         {
             return _dbService.GetOrderItems();
         }
+
+        public bool AddCategory(Category category)
+        {
+            bool result = _dbService.AddCategory(category);
+            if (result)
+            {
+                Categories = _dbService.GetCategories();
+            }
+            return result;
+        }
+
+
+        public bool UpdateCategory(Category category)
+        {
+            bool result = _dbService.UpdateCategory(category);
+            if (result)
+            {
+                Categories = (_dbService.GetCategories());  
+            }
+            return result;  
+        }
+
+        public bool DeleteCategory(int categoryId)
+        {
+            bool result = _dbService.DeleteCategory(categoryId);
+            if (result)
+            {
+                Categories = _dbService.GetCategories();
+            }
+            return result;
+        }
+
+
     }
 }

@@ -48,7 +48,7 @@ namespace WpfAppRestoranOrder
                 _kitchenWindow.Title = "Ресторан - Кухня";
                 _kitchenWindow.Show();
 
-                this.Topmost = true;    
+                //this.Topmost = true;    
                 this.Title = "Ресторан - Головне вікно (закрийте для виходу!!!)";
 
             }

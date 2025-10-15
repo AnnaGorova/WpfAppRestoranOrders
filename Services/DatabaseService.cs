@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
+using System.Windows.Documents;
 using WpfAppRestoranOrder.Models;
 
 namespace WpfAppRestoranOrder.Services
@@ -155,5 +156,76 @@ namespace WpfAppRestoranOrder.Services
         {
             return _connectionString;
         }
+
+
+
+        public bool AddCategory(Category category)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand(
+                        "INSERT INTO categories (Name, ImageUrl) VALUES (@Name, @ImageUrl)", connection);
+
+                    command.Parameters.AddWithValue("@Name", category.Name);
+                    command.Parameters.AddWithValue("@ImageUrl", category.ImageUrl ?? "");
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public bool UpdateCategory(Category category)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand(
+                        "UPDATE categories SET Name = @Name, ImageUrl = @ImageUrl WHERE Id = @Id", connection);
+
+                    command.Parameters.AddWithValue("@Id", category.Id);
+                    command.Parameters.AddWithValue("@Name", category.Name);
+                    command.Parameters.AddWithValue("@ImageUrl", category.ImageUrl);
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteCategory(int categoryId) 
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand("DELETE FROM Categories WHERE Id = @Id",  connection); 
+                    command.Parameters.AddWithValue("@Id", categoryId);
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;  
+                }
+            }
+            catch (Exception ex) 
+            {
+                return false;
+            }
+        }
+
     }
 }
