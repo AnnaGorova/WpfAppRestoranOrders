@@ -94,8 +94,9 @@
 
                                     <!-- Кнопки CRUD для замовлень -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                        <Button x:Name="AddOrderBtn" Content="➕ Додати замовлення" Margin="5" Padding="10" Click="AddOrderBtn_Click"/>
-                                        <Button x:Name="EditOrderBtn" Content="✏️ Редагувати" Margin="5" Padding="10" Click="EditOrderBtn_Click"/>
+
+                                        <Button x:Name="EditOrderBtn" Content="✏️ Редагувати Status" Margin="5" Padding="10" Click="EditOrderBtn_Click"/>
+                                        <Button x:Name="EditOrderContactBtn" Content="Редагувати контакти" Margin="5" Padding="10" Click="EditOrderContactBtn_Click"/>
                                         <Button x:Name="DeleteOrderBtn" Content="🗑️ Видалити" Margin="5" Padding="10" Click="DeleteOrderBtn_Click"/>
                                         <Button x:Name="RefreshOrdersBtn" Content="🔄 Оновити" Margin="5" Padding="10" Click="RefreshOrdersBtn_Click"/>
                                     </StackPanel>
@@ -122,14 +123,7 @@
                                 <StackPanel Margin="5">
                                     <TextBlock Text="Таблиця OrderItems" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
 
-                                    <!-- Кнопки CRUD для позицій -->
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                        <Button x:Name="AddOrderItemBtn" Content="➕ Додати позицію" Margin="5" Padding="10" Click="AddOrderItemBtn_Click"/>
-                                        <Button x:Name="EditOrderItemBtn" Content="✏️ Редагувати" Margin="5" Padding="10" Click="EditOrderItemBtn_Click"/>
-                                        <Button x:Name="DeleteOrderItemBtn" Content="🗑️ Видалити" Margin="5" Padding="10" Click="DeleteOrderItemBtn_Click"/>
-                                        <Button x:Name="RefreshOrderItemsBtn" Content="🔄 Оновити" Margin="5" Padding="10" Click="RefreshOrderItemsBtn_Click"/>
-                                    </StackPanel>
-
+                                    
                                     <DataGrid x:Name="AllOrderItemsGrid" AutoGenerateColumns="False" 
                                               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                               HorizontalContentAlignment="Stretch"

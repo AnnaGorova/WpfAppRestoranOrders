@@ -311,5 +311,85 @@ namespace WpfAppRestoranOrder.Services
             }
         }
 
+
+        public bool UpdateOrderContacts(Order order)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var command = new SqlCommand(
+                        "UPDATE Orders SET CustomerName = @CustomerName, " +
+                        "PhoneNumber = @PhoneNumber, " +
+                        "DeliveryAddress = @DeliveryAddress WHERE Id = @Id", connection);
+                    
+                    command.Parameters.AddWithValue("@Id", order.Id);
+                    
+                    command.Parameters.AddWithValue("@CustomerName", order.CustomerName);
+                    command.Parameters.AddWithValue("@PhoneNumber", order.PhoneNumber);
+                    command.Parameters.AddWithValue("@DeliveryAddress", order.DeliveryAddress ?? "");
+
+
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool UpdateOrderStatus(Order order)
+        {
+            try
+            {
+                using (var connecting = new SqlConnection(_connectionString))
+                {
+                    connecting.Open();
+                    var command = new SqlCommand(
+                        "UPDATE Orders SET Status = @Status WHERE Id = @Id", connecting);
+                    command.Parameters.AddWithValue("@Id", order.Id);
+                    command.Parameters.AddWithValue("@Status", order.Status.ToString());
+
+                    int result = command.ExecuteNonQuery();
+                    return result > 0;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool DleteOrder(int orderId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var deleteOrderCommand = new SqlCommand(
+                        "DELET FROM Order WHERE Id = @Id", connection);
+                    deleteOrderCommand.Parameters.AddWithValue("@Id", orderId);
+
+                    int result = deleteOrderCommand.ExecuteNonQuery();
+                    return result > 0;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
     }
 }

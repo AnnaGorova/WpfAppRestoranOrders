@@ -326,83 +326,168 @@ namespace WpfAppRestoranOrder.Admin
 
 
         // 📋 ЗАМОВЛЕННЯ - CRUD
-        private void AddOrderBtn_Click(object sender, RoutedEventArgs e)
+        private void EditOrderContactBtn_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Додати замовлення - функція в розробці", "Інформація");
+            if (AllOrdersGrid.SelectedItem is Order selectedOrder)
+            {
+                // Перевіряємо, чи можна редагувати контакти
+                if (selectedOrder.Status == OrderStatus.New || selectedOrder.Status == OrderStatus.InProgress)
+                {
+                    string newName = Interaction.InputBox("Ім'я клієнта:", 
+                        "Редагування контактів", selectedOrder.CustomerName);
+                    if (string.IsNullOrEmpty(newName)) return;
+
+                    string newPhone = Interaction.InputBox("Телефон:",
+                        "Редагування контактів", selectedOrder.PhoneNumber);
+                    if (string.IsNullOrEmpty(newPhone)) return;
+
+                    // Адресу можна змінити тільки для нових замовлень
+                    string newAddress = Interaction.InputBox("Адреса доставки:", 
+                        "Редагування контактів", selectedOrder.DeliveryAddress);
+
+
+                    var updatedOrder = new Order
+                    {
+                        Id = selectedOrder.Id,
+                        CustomerName = newName,
+                        PhoneNumber = newPhone,
+                        DeliveryAddress = newAddress,
+                        OrderDate = selectedOrder.OrderDate,
+                        Status = selectedOrder.Status,
+                        TotalAmount = selectedOrder.TotalAmount
+                    };
+
+                    bool success = _dataService.UpdateOrderContacts(updatedOrder);
+                    if (success)
+                    {
+                        _dataService.RefreshData();
+                        AllOrdersGrid.ItemsSource = _dataService.Orders;
+                        UpdateTablesStatistics();
+                        MessageBox.Show("Контактні дані замовлення оновлено!", "Успіх");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Помилка при оновленні контактних даних", "Помилка");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Контактні дані можна редагувати тільки для замовлень зі статусом 'New' або 'InProgress'",
+                        "Обмеження",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                }
+            }
+            else
+            {
+                MessageBox.Show("Виберіть замовлення для редагування контактів", "Попередження");
+            }
         }
+    
+       
 
         private void EditOrderBtn_Click(object sender, RoutedEventArgs e)
         {
             if (AllOrdersGrid.SelectedItem is Order selectedOrder)
             {
-                MessageBox.Show($"Редагувати замовлення: #{selectedOrder.Id}", "Інформація");
+                string statusInput = Interaction.InputBox(
+                    "Змінити статус замовлення: \n\n" +
+                    "New - Нове\n" +
+                    "InProgress - В роботі\n" +
+                    "Ready - Готове\n" +
+                    "Completed - Видане\n" +
+                    "Cancelled - Скасоване",
+                    "Статус замовлення",
+                    selectedOrder.Status.ToString()
+
+                    );
+                if (Enum.TryParse<OrderStatus>(statusInput, out OrderStatus newStatus))
+                {
+                    var updateOrder = new Order
+                    {
+                        Id = selectedOrder.Id,
+                        OrderDate = selectedOrder.OrderDate,
+                        Status = newStatus,
+                        TotalAmount = selectedOrder.TotalAmount,
+                        CustomerName = selectedOrder.CustomerName,
+                        PhoneNumber = selectedOrder.PhoneNumber,
+                        DeliveryAddress = selectedOrder.DeliveryAddress,
+                    };
+
+                    bool success = _dataService.UpdateOrderStatus(updateOrder);
+                    if (success)
+                    {
+                        _dataService.RefreshData();
+                        AllOrdersGrid.ItemsSource = _dataService.Orders;
+                        UpdateTablesStatistics();
+                        MessageBox.Show($"Статус замовлення №{selectedOrder.Id} змінено на {newStatus}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Помилка при оновленні статусу");
+                    }
+                }
             }
             else
             {
-                MessageBox.Show("Виберіть замовлення для редагування", "Попередження");
+                MessageBox.Show("Виберіть замовлення для редагування статусу");
             }
         }
+
+
 
         private void DeleteOrderBtn_Click(object sender, RoutedEventArgs e)
         {
             if (AllOrdersGrid.SelectedItem is Order selectedOrder)
             {
-                var result = MessageBox.Show($"Видалити замовлення #{selectedOrder.Id}?",
-                    "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
+                if (selectedOrder.Status == OrderStatus.New)
                 {
-                    MessageBox.Show($"Замовлення #{selectedOrder.Id} видалено", "Інформація");
+                    var result = MessageBox.Show($"Видалити нове замовлення " +
+                        $"№{selectedOrder.Id} від {selectedOrder.CustomerName} - {selectedOrder.PhoneNumber}?",
+                        "Підтвердження видалення",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question
+                        );
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        bool success = _dataService.DeleteOrder(selectedOrder.Id);
+                        if (success)
+                        {
+                            RefreshOrders();
+                            MessageBox.Show($"Замовлення видалено №{selectedOrder.Id} від {selectedOrder.CustomerName} - {selectedOrder.PhoneNumber}");
+                        }
+                    }
                 }
-            }
-            else
+                else
+                {
+                    MessageBox.Show("Виберіть замовлення для видалення. Можна видалити замовлення лише зі статусом => New. " +
+                        "Для інших статусів використовуйте статус 'Cancelled'", "Обмеження",
+                        MessageBoxButton.OK, MessageBoxImage.Warning
+                    );
+
+                }
+            }else
             {
-                MessageBox.Show("Виберіть замовлення для видалення", "Попередження");
+                MessageBox.Show("Виберіть замовлення для видалення");
             }
         }
 
         private void RefreshOrdersBtn_Click(object sender, RoutedEventArgs e)
         {
+            RefreshOrders();
+        }
+        private void RefreshOrders()
+        {
             _dataService.RefreshData();
             AllOrdersGrid.ItemsSource = _dataService.Orders;
-        }
-       
-
-       // 🛒 ПОЗИЦІЇ - CRUD
-        private void AddOrderItemBtn_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Додати позицію - функція в розробці", "Інформація");
+            UpdateTablesStatistics();
         }
 
-        private void EditOrderItemBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (AllOrderItemsGrid.SelectedItem is OrderItem selectedItem)
-            {
-                MessageBox.Show($"Редагувати позицію: ID {selectedItem.Id}", "Інформація");
-            }
-            else
-            {
-                MessageBox.Show("Виберіть позицію для редагування", "Попередження");
-            }
-        }
+        // 🛒 ПОЗИЦІЇ - CRUD
 
-        private void DeleteOrderItemBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (AllOrderItemsGrid.SelectedItem is OrderItem selectedItem)
-            {
-                var result = MessageBox.Show($"Видалити позицію ID {selectedItem.Id}?",
-                    "Підтвердження", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    MessageBox.Show($"Позиція ID {selectedItem.Id} видалена", "Інформація");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Виберіть позицію для видалення", "Попередження");
-            }
-        }
 
         private void RefreshOrderItemsBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -425,5 +510,7 @@ namespace WpfAppRestoranOrder.Admin
                 MessageBox.Show($"Помилка оновлення: {ex.Message}", "Помилка");
             }
         }
+
+      
     }
 }

@@ -112,5 +112,46 @@ namespace WpfAppRestoranOrder.Services
             }
             return result;
         }
+
+
+        public bool UpdateOrderStatus(Order order)
+        {
+            bool result = _dbService.UpdateOrderStatus(order);
+            if (result)
+            {
+                Orders = _dbService.GetOrders();
+                
+            }
+            return result;
+        }
+
+       public bool UpdateOrderContacts(Order order)
+        {
+            bool result = _dbService.UpdateOrderContacts(order);
+            if (result)
+            {
+                Orders = _dbService.GetOrders();
+            }
+            return result;
+        }
+
+
+        public bool DeleteOrder(int orderId)
+        {
+            bool result = _dbService.DleteOrder(orderId);
+            if (result)
+            {
+                Orders = _dbService.GetOrders();
+            }
+            return result;
+        }
+
+
+        public List<OrderItem> GetOrderItemsByOrderId(int orderId)
+        {
+            return _dbService.GetOrderItems()
+                .Where(item =>  item.OrderId == orderId)
+                .ToList();  
+        }
     }
 }
