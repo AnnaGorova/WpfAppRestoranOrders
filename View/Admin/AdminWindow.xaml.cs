@@ -10,20 +10,99 @@ namespace WpfAppRestoranOrder.Admin
     public partial class AdminWindow : Window
     {
         private DataService _dataService;
-
+        private SimpleChat _chat;
         public AdminWindow()
         {
             InitializeComponent();
             _dataService = new DataService();
+
+            _chat = new SimpleChat("АДМІН", true);
+            _chat.OnMessageReceived = (msg) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ChatBox.Text += $"{msg}\n";
+                    ChatBox.ScrollToEnd(); 
+                });
+            };
+
             Loaded += AdminWindow_Loaded;
+            Closed += AdminWindow_Closed;
         }
 
         public AdminWindow(DataService dataService)
         {
             InitializeComponent();
             _dataService = dataService;
+            _chat = new SimpleChat("АДМІН", true);
+            _chat.OnMessageReceived = (msg) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ChatBox.Text += $"{msg}\n";
+                    ChatBox.ScrollToEnd();
+                });
+            };
+
             Loaded += AdminWindow_Loaded;
+            Closed += AdminWindow_Closed;
+
         }
+
+        private void AdminWindow_Closed(object sender, EventArgs e)
+        {
+            _chat?.StopListening();
+            _chat?.Dispose();
+        }
+
+        private async void SendToKitchenBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                
+                string message = MessageTextBox.Text.Trim();
+
+              
+                if (string.IsNullOrEmpty(message) || message == "Введіть повідомлення для кухні...")
+                {
+                    MessageBox.Show("Введіть текст повідомлення!", "Попередження");
+                    return;
+                }
+
+              
+                if (_chat == null)
+                {
+                    _chat = new SimpleChat("АДМІН", true);
+                    _chat.StartListening();
+                }
+
+                
+                ChatBox.Text += $"[АДМІН]: {message}\n";
+                ChatBox.ScrollToEnd();
+
+                
+                await _chat.SendMessage(message);
+
+                
+                MessageTextBox.Text = "";
+
+                
+               
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка відправки: {ex.Message}", "Помилка");
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _chat?.StopListening(); 
+            _chat?.Dispose(); 
+            base.OnClosed(e);
+        }
+
+
 
         private void AdminWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -31,13 +110,23 @@ namespace WpfAppRestoranOrder.Admin
             {
                 _dataService.LoadAllData();
                 LoadAllTablesData();
+
+               
+                if (_chat != null)
+                {
+                    _chat.StartListening();
+                    ChatBox.Text += "💬 Чат з кухнею активовано...\n";
+                }
+                else
+                {
+                    ChatBox.Text += "❌ Чат не ініціалізовано\n";
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Помилка завантаження: {ex.Message}", "Помилка");
             }
         }
-
         private void LoadAllTablesData()
         {
             
@@ -46,10 +135,9 @@ namespace WpfAppRestoranOrder.Admin
             
             AllMenuGrid.ItemsSource = _dataService.MenuItems;
 
-            
+           
             AllOrdersGrid.ItemsSource = _dataService.Orders;
-
-            
+                
             var orderItems = _dataService.GetOrderItems();
             AllOrderItemsGrid.ItemsSource = orderItems;
 
@@ -57,15 +145,7 @@ namespace WpfAppRestoranOrder.Admin
             UpdateTablesStatistics();
         }
 
-        private void UpdateTablesStatistics()
-        {
-            CategoriesCount.Text = (_dataService.Categories?.Count ?? 0).ToString();
-            MenuItemsCount.Text = (_dataService.MenuItems?.Count ?? 0).ToString();
-            OrdersCount.Text = (_dataService.Orders?.Count ?? 0).ToString();
-
-            var orderItems = _dataService.GetOrderItems();
-            OrderItemsCount.Text = (orderItems?.Count ?? 0).ToString();
-        }
+        
 
         // 📂 КАТЕГОРІЇ - CRUD
         private void AddCategoryBtn_Click(object sender, RoutedEventArgs e)
@@ -285,12 +365,28 @@ namespace WpfAppRestoranOrder.Admin
         {
             if (AllMenuGrid.SelectedItem is Models.MenuItem selectedItem)
             {
-                var result = MessageBox.Show(
-                    $"Ви впевнені, що хочете видалити страву '{selectedItem.Name}'?",
-                    "Підтвердження видалення",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question
-                );
+                
+                var orderItems = _dataService.GetOrderItems();
+                bool isUsed = orderItems.Any(oi => oi.MenuItemId == selectedItem.Id);
+
+                string message;
+                MessageBoxImage icon;
+
+                if (isUsed)
+                {
+                    message = $"Страву '{selectedItem.Name}' використовували в замовленнях.\n\n" +
+                             "⚠️ Вона буде прихована з меню, але залишиться в базі даних для історії замовлень.";
+                    icon = MessageBoxImage.Information;
+                }
+                else
+                {
+                    message = $"Видалити страву '{selectedItem.Name}' повністю з бази даних?\n\n" +
+                             "🗑️ Ця дія незворотня!";
+                    icon = MessageBoxImage.Warning;
+                }
+
+                var result = MessageBox.Show(message, "Видалення страви",
+                    MessageBoxButton.YesNo, icon);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -298,13 +394,19 @@ namespace WpfAppRestoranOrder.Admin
 
                     if (success)
                     {
-                        
                         RefreshMenu();
-                        MessageBox.Show($"Страва '{selectedItem.Name}' успішно видалена!", "Успіх");
+                        if (isUsed)
+                        {
+                            MessageBox.Show($"Страву '{selectedItem.Name}' приховано!", "Успіх");
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Страву '{selectedItem.Name}' повністю видалено!", "Успіх");
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Помилка при видаленні страви");
+                        MessageBox.Show("Помилка при видаленні страви", "Помилка");
                     }
                 }
             }
@@ -320,6 +422,7 @@ namespace WpfAppRestoranOrder.Admin
         private void RefreshMenu()
         {
             _dataService.RefreshData();
+
             AllMenuGrid.ItemsSource = _dataService.MenuItems;
             UpdateTablesStatistics();
         }
@@ -330,7 +433,7 @@ namespace WpfAppRestoranOrder.Admin
         {
             if (AllOrdersGrid.SelectedItem is Order selectedOrder)
             {
-                // Перевіряємо, чи можна редагувати контакти
+                
                 if (selectedOrder.Status == OrderStatus.New || selectedOrder.Status == OrderStatus.InProgress)
                 {
                     string newName = Interaction.InputBox("Ім'я клієнта:", 
@@ -341,7 +444,7 @@ namespace WpfAppRestoranOrder.Admin
                         "Редагування контактів", selectedOrder.PhoneNumber);
                     if (string.IsNullOrEmpty(newPhone)) return;
 
-                    // Адресу можна змінити тільки для нових замовлень
+                    
                     string newAddress = Interaction.InputBox("Адреса доставки:", 
                         "Редагування контактів", selectedOrder.DeliveryAddress);
 
@@ -394,11 +497,11 @@ namespace WpfAppRestoranOrder.Admin
             {
                 string statusInput = Interaction.InputBox(
                     "Змінити статус замовлення: \n\n" +
-                    "New - Нове\n" +
-                    "InProgress - В роботі\n" +
-                    "Ready - Готове\n" +
-                    "Completed - Видане\n" +
-                    "Cancelled - Скасоване",
+                    "1 - Нове\n" +
+                    "2 - В роботі\n" +
+                    "3 - Готове\n" +
+                    "4 - Видане\n" +
+                    "5 - Скасоване",
                     "Статус замовлення",
                     selectedOrder.Status.ToString()
 
@@ -495,7 +598,25 @@ namespace WpfAppRestoranOrder.Admin
             var orderItems = _dataService.GetOrderItems();
             AllOrderItemsGrid.ItemsSource = orderItems;
         }
-        
+
+
+
+        // Статистика
+
+        private void UpdateTablesStatistics()
+        {
+            CategoriesCount.Text = (_dataService.Categories?.Count ?? 0).ToString();
+            MenuItemsCount.Text = (_dataService.MenuItems?.Count ?? 0).ToString();
+            OrdersCount.Text = (_dataService.Orders?.Count ?? 0).ToString();
+
+            var orderItems = _dataService.GetOrderItems();
+            OrderItemsCount.Text = (orderItems?.Count ?? 0).ToString();
+
+            CalculateRevenueStatistics();
+
+            UpdateTopDishesStatistics();
+        }
+
 
         private void RefreshAllDataBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -511,6 +632,109 @@ namespace WpfAppRestoranOrder.Admin
             }
         }
 
-      
+
+             
+
+        private void CalculateRevenueStatistics()
+        {
+            if (_dataService.Orders == null) return;
+
+            
+            var completedOrders = _dataService.Orders
+                .Where(order => order.Status == OrderStatus.Completed)
+                .ToList();
+
+            
+            var cancelledOrders = _dataService.Orders
+                .Where(order => order.Status == OrderStatus.Cancelled)
+                .ToList();
+
+            
+            var allOrders = _dataService.Orders.ToList();
+
+            
+            decimal totalRevenue = completedOrders.Sum(order => order.TotalAmount);
+            decimal cancelledAmount = cancelledOrders.Sum(order => order.TotalAmount);
+            decimal potentialRevenue = allOrders.Sum(order => order.TotalAmount);
+
+           
+            TotalRevenueText.Text = $"{totalRevenue:0.00} ₴";
+            CompletedOrdersCount.Text = completedOrders.Count.ToString();
+            CancelledOrdersCount.Text = cancelledOrders.Count.ToString();
+
+           
+            UpdateAdditionalStatistics(completedOrders, cancelledOrders, totalRevenue, cancelledAmount, potentialRevenue);
+        }
+
+        private void UpdateAdditionalStatistics(List<Order> completedOrders, List<Order> cancelledOrders,
+                                      decimal totalRevenue, decimal cancelledAmount, decimal potentialRevenue)
+        {
+            double successRate = completedOrders.Count > 0 ?
+                (double)completedOrders.Count / (completedOrders.Count + cancelledOrders.Count) * 100 : 0;
+
+            
+            string statisticsText =
+                $"💰 Загальний дохід: {totalRevenue:0.00} ₴\n" +
+                $"❌ Втрачено через скасування: {cancelledAmount:0.00} ₴\n" +
+                $"📈 Потенційний дохід: {potentialRevenue:0.00} ₴\n" +
+                $"✅ Успішних замовлень: {completedOrders.Count}\n" +
+                $"🚫 Скасованих замовлень: {cancelledOrders.Count}\n" +
+                $"🎯 Успішність: {successRate:0.0}%";
+
+            if (DetailedStatsText != null)
+                DetailedStatsText.Text = statisticsText;
+        }
+
+
+
+
+
+        private List<TopDish> GetTopDishes(int topCount = 5)
+        {
+            var orderItems = _dataService.GetOrderItems();
+            var menuItems = _dataService.MenuItems;
+
+            
+            var dishStats = orderItems
+                .GroupBy(oi => oi.MenuItemId)
+                .Select(g => new
+                {
+                    MenuItemId = g.Key,
+                    TotalQuantity = g.Sum(oi => oi.Quantity),
+                    OrderCount = g.Count()
+                })
+                .OrderByDescending(x => x.TotalQuantity)
+                .Take(topCount)
+                .ToList();
+
+            
+            var topDishes = new List<TopDish>();
+            int position = 1;
+
+            foreach (var dish in dishStats)
+            {
+                var menuItem = menuItems.FirstOrDefault(m => m.Id == dish.MenuItemId);
+                if (menuItem != null)
+                {
+                    topDishes.Add(new TopDish
+                    {
+                        Position = position++,
+                        Name = menuItem.Name,
+                        OrderCount = dish.TotalQuantity,
+                        MenuItemId = dish.MenuItemId
+                    });
+                }
+            }
+
+            return topDishes;
+        }
+
+
+
+        private void UpdateTopDishesStatistics()
+        {
+            var topDishes = GetTopDishes(5);
+            TopDishesItemsControl.ItemsSource = topDishes;
+        }
     }
 }

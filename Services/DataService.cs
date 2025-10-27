@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Windows;
 using WpfAppRestoranOrder.Models;
+using WpfAppRestoranOrder.View.Client;
 
 namespace WpfAppRestoranOrder.Services
 {
@@ -105,13 +107,48 @@ namespace WpfAppRestoranOrder.Services
 
         public bool DeleteMenuItem(int menuItemId)
         {
-            bool result = _dbService.DeleteMenuItem(menuItemId);
-            if (result)
+            try
             {
-                MenuItems = _dbService.GetMenu();
+               
+                var orderItems = GetOrderItems();
+                bool isUsedInOrders = orderItems.Any(oi => oi.MenuItemId == menuItemId);
+
+                if (isUsedInOrders)
+                {
+                    
+                    var menuItem = MenuItems.FirstOrDefault(m => m.Id == menuItemId);
+                    if (menuItem != null)
+                    {
+                        menuItem.IsAvailable = false;
+                        bool success = _dbService.UpdateMenuItem(menuItem);
+
+                        if (success)
+                        {
+                            RefreshData();
+                            return true;
+                        }
+                    }
+                }
+                else
+                {
+                    
+                    bool success = _dbService.DeleteMenuItem(menuItemId);
+                    if (success)
+                    {
+                        RefreshData();
+                        return true;
+                    }
+                }
+
+                return false;
             }
-            return result;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка: {ex.Message}", "Помилка");
+                return false;
+            }
         }
+
 
 
         public bool UpdateOrderStatus(Order order)
@@ -153,5 +190,42 @@ namespace WpfAppRestoranOrder.Services
                 .Where(item =>  item.OrderId == orderId)
                 .ToList();  
         }
+
+
+
+
+
+
+
+
+
+
+
+        public bool CreateOrder(Order order, List<CartItem> cartItems)
+        {
+            bool result = _dbService.CreateOrder(order, cartItems);
+            if (result)
+            {
+                
+                Orders = _dbService.GetOrders();
+            }
+            return result;
+        }
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
     }
 }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Windows.Documents;
 using WpfAppRestoranOrder.Models;
+using WpfAppRestoranOrder.View.Client;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WpfAppRestoranOrder.Services
@@ -375,14 +376,20 @@ namespace WpfAppRestoranOrder.Services
                 {
                     connection.Open();
 
+                    
+                    var deleteOrderItemsCommand = new SqlCommand(
+                        "DELETE FROM OrderItems WHERE OrderId = @OrderId", connection);
+                    deleteOrderItemsCommand.Parameters.AddWithValue("@OrderId", orderId);
+                    deleteOrderItemsCommand.ExecuteNonQuery();
+
+                    
                     var deleteOrderCommand = new SqlCommand(
-                        "DELET FROM Order WHERE Id = @Id", connection);
+                        "DELETE FROM Orders WHERE Id = @Id", connection);
                     deleteOrderCommand.Parameters.AddWithValue("@Id", orderId);
 
                     int result = deleteOrderCommand.ExecuteNonQuery();
                     return result > 0;
                 }
-
             }
             catch (Exception ex)
             {
@@ -390,6 +397,99 @@ namespace WpfAppRestoranOrder.Services
             }
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+        public bool CreateOrder(Order order, List<CartItem> cartItems)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    
+                    var maxIdCommand = new SqlCommand("SELECT MAX(Id) FROM orders", connection);
+                    var maxIdResult = maxIdCommand.ExecuteScalar();
+                    var maxOrderId = maxIdResult == DBNull.Value ? 0 : Convert.ToInt32(maxIdResult);
+
+                    
+                    var currentIdentityCommand = new SqlCommand("SELECT IDENT_CURRENT('orders')", connection);
+                    var currentIdentity = Convert.ToInt32(currentIdentityCommand.ExecuteScalar());
+
+                    if (currentIdentity >= 1000 || currentIdentity <= maxOrderId)
+                    {
+                        var newSeed = maxOrderId + 1;
+                        var resetCommand = new SqlCommand($"DBCC CHECKIDENT ('orders', RESEED, {newSeed})", connection);
+                        resetCommand.ExecuteNonQuery();
+                    }
+
+                    
+                    var insertOrderCommand = new SqlCommand(
+                        @"INSERT INTO Orders (OrderDate, Status, TotalAmount, CustomerName, PhoneNumber, DeliveryAddress) 
+                          VALUES (@OrderDate, @Status, @TotalAmount, @CustomerName, @PhoneNumber, @DeliveryAddress);
+                          SELECT SCOPE_IDENTITY();", connection);
+                   
+
+                    insertOrderCommand.Parameters.AddWithValue("@OrderDate", order.OrderDate);
+                    insertOrderCommand.Parameters.AddWithValue("@Status", order.Status.ToString());
+                    insertOrderCommand.Parameters.AddWithValue("@TotalAmount", order.TotalAmount);
+                    insertOrderCommand.Parameters.AddWithValue("@CustomerName", order.CustomerName);
+                    insertOrderCommand.Parameters.AddWithValue("@PhoneNumber", order.PhoneNumber);
+                    insertOrderCommand.Parameters.AddWithValue("@DeliveryAddress", order.DeliveryAddress ?? (object)DBNull.Value);
+
+                    var orderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
+
+                    
+                    foreach (var cartItem in cartItems)
+                    {
+                        var insertOrderItemCommand = new SqlCommand(
+                            @"INSERT INTO OrderItems (OrderId, MenuItemId, Quantity, UnitPrice) 
+                              VALUES (@OrderId, @MenuItemId, @Quantity, @UnitPrice)", connection);
+
+                        insertOrderItemCommand.Parameters.AddWithValue("@OrderId", orderId);
+                        insertOrderItemCommand.Parameters.AddWithValue("@MenuItemId", cartItem.MenuItemId);
+                        insertOrderItemCommand.Parameters.AddWithValue("@Quantity", cartItem.Quantity);
+                        insertOrderItemCommand.Parameters.AddWithValue("@UnitPrice", cartItem.Price);
+
+                        insertOrderItemCommand.ExecuteNonQuery();
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+               
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
     }
 }

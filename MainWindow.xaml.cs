@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 using WpfAppRestoranOrder.Admin;
 using WpfAppRestoranOrder.Services;
 using WpfAppRestoranOrder.View.Client;
@@ -12,7 +13,7 @@ namespace WpfAppRestoranOrder
         private AdminWindow _adminWindow;
         private ClientWindow _clientWindow;
         private KitchenWindow _kitchenWindow;
-
+        
 
 
         public MainWindow()
@@ -39,12 +40,12 @@ namespace WpfAppRestoranOrder
                 _adminWindow.Show();
 
                 
-                _clientWindow = new ClientWindow();
+                _clientWindow = new ClientWindow(_dataService);
                 _clientWindow.Title = "Ресторан - Клієнт";
                 _clientWindow.Show();
 
                 
-                _kitchenWindow = new KitchenWindow();
+                _kitchenWindow = new KitchenWindow(_dataService);
                 _kitchenWindow.Title = "Ресторан - Кухня";
                 _kitchenWindow.Show();
 
