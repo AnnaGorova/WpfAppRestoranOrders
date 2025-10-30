@@ -65,15 +65,14 @@ INSERT INTO menuItems (Name, Description, Price, CategoryId, ImageUrl) VALUES
 GO 
 
 
-CREATE TABLE orders (
-    Id INT NOT NULL IDENTITY PRIMARY KEY,
-    OrderDate DATETIME2 NOT NULL DEFAULT GETDATE(),
-    Status NVARCHAR(20) NOT NULL DEFAULT 'New' 
-        CHECK (Status IN ('New','InProgress','Ready','Completed','Cancelled')),
-    TotalAmount DECIMAL(10,2) NOT NULL DEFAULT 0,
+CREATE TABLE Orders (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    OrderDate DATETIME2 NOT NULL,
+    Status NVARCHAR(50) NOT NULL,
+    TotalAmount DECIMAL(18,2) NOT NULL,
     CustomerName NVARCHAR(100) NOT NULL,
     PhoneNumber NVARCHAR(20) NOT NULL,
-    DeliveryAddress NVARCHAR(255) NULL
+    DeliveryAddress NVARCHAR(200) NULL
 );
 GO 
 
