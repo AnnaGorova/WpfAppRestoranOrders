@@ -1,0 +1,69 @@
+﻿<Window x:Class="WpfAppRestoranOrder.View.Client.CustomerInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Дані клієнта" Height="400" Width="400"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" Text="Введіть ваші дані для замовлення" 
+                   FontSize="18" FontWeight="Bold" Margin="0,0,0,15"
+                   HorizontalAlignment="Center"/>
+
+        <!-- Ім'я (обов'язкове) -->
+        <TextBlock Grid.Row="1" Text="Ім'я *" 
+                   Margin="0,5" FontWeight="SemiBold"
+                   Foreground="#FFBC1D1D"/>
+        <TextBox Grid.Row="1" x:Name="NameTextBox" Height="30" 
+                 Margin="0,25,0,10" HorizontalAlignment="Stretch"
+                 ToolTip="Введіть ваше ім'я для замовлення"
+                 VerticalContentAlignment="Center"/>
+
+        <!-- Телефон (обов'язковий) -->
+        <TextBlock Grid.Row="2" Text="Телефон *" 
+                   Margin="0,5" FontWeight="SemiBold"
+                   Foreground="#FFBC1D1D"/>
+        <TextBox Grid.Row="2" x:Name="PhoneTextBox" Height="30" 
+                 Margin="0,25,0,10" HorizontalAlignment="Stretch"
+                 ToolTip="Введіть ваш номер телефону для зв'язку"
+                 VerticalContentAlignment="Center"/>
+
+        <!-- Адреса (необов'язкова) -->
+        <TextBlock Grid.Row="3" Text="Адреса доставки" 
+                   Margin="0,5" FontWeight="SemiBold"
+                   Foreground="#666666"/>
+        <TextBlock Grid.Row="3" Text="(необов'язково)" 
+                   Margin="0,20" FontSize="11" FontStyle="Italic"
+                   Foreground="#888888" HorizontalAlignment="Right"/>
+        <TextBox Grid.Row="3" x:Name="AddressTextBox" Height="30" 
+                 Margin="0,40,0,15" HorizontalAlignment="Stretch"
+                 ToolTip="Введіть адресу доставки, якщо потрібно"
+                 VerticalContentAlignment="Center"/>
+
+        <!-- Пояснення -->
+        <TextBlock Grid.Row="4" Text="* - обов'язкові поля для заповнення" 
+                   FontSize="11" FontStyle="Italic" Foreground="#FFBC1D1D"
+                   Margin="0,0,0,10"/>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Скасувати" Click="CancelButton_Click" 
+                    Margin="0,0,10,0" Padding="15,8"
+                    Background="#666666" Foreground="White"
+                    FontWeight="SemiBold"/>
+            <Button Content="🔄 Підтвердити замовлення" Click="ConfirmButton_Click" 
+                    Background="#FFBC1D1D" Foreground="White" 
+                    FontWeight="Bold" Padding="20,8"
+                    FontSize="14"/>
+        </StackPanel>
+    </Grid>
+</Window>
