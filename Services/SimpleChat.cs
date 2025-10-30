@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WpfAppRestoranOrder.Services
 {
@@ -43,11 +44,11 @@ namespace WpfAppRestoranOrder.Services
                 _listener = new TcpListener(IPAddress.Any, _listenPort);
                 _listener.Start();
                 _ = Task.Run(ListenForMessages);
-                Console.WriteLine($"[{_userName}] Слухаю порт {_listenPort}");
+               // Console.WriteLine($"[{_userName}] Слухаю порт {_listenPort}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{_userName}] Помилка запуску слухача: {ex.Message}");
+                //Console.WriteLine($"[{_userName}] Помилка запуску слухача: {ex.Message}");
             }
         }
 
@@ -64,7 +65,7 @@ namespace WpfAppRestoranOrder.Services
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                    Console.WriteLine($"[{_userName}] Отримано: {message}");
+                   // Console.WriteLine($"[{_userName}] Отримано: {message}");
                     OnMessageReceived?.Invoke(message);
 
                     client.Close();
@@ -78,7 +79,8 @@ namespace WpfAppRestoranOrder.Services
                 {
                     if (_isListening)
                     {
-                        Console.WriteLine($"[{_userName}] Помилка отримання: {ex.Message}");
+                        MessageBox.Show($"[{_userName}] Помилка отримання: {ex.Message}");
+                        //Console.WriteLine($"[{_userName}] Помилка отримання: {ex.Message}");
                     }
                     await Task.Delay(1000); 
                 }
@@ -98,15 +100,17 @@ namespace WpfAppRestoranOrder.Services
                 byte[] data = Encoding.UTF8.GetBytes(fullMessage);
                 await stream.WriteAsync(data, 0, data.Length);
 
-                Console.WriteLine($"[{_userName}] Відправлено: {fullMessage}");
+                //Console.WriteLine($"[{_userName}] Відправлено: {fullMessage}");
             }
             catch (TimeoutException)
             {
-                Console.WriteLine($"[{_userName}] Таймаут підключення до {_sendPort}");
+                MessageBox.Show($"[{_userName}] Таймаут підключення до {_sendPort}");
+               // Console.WriteLine($"[{_userName}] Таймаут підключення до {_sendPort}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{_userName}] Помилка відправки: {ex.Message}");
+                MessageBox.Show($"[{_userName}] Помилка відправки: {ex.Message}");
+                //Console.WriteLine($"[{_userName}] Помилка відправки: {ex.Message}");
             }
         }
 

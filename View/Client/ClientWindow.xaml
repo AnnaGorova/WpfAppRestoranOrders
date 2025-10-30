@@ -102,7 +102,7 @@
                                    BorderBrush="#FF555555" BorderThickness="1">
                                 <StackPanel>
                                     <Image Source="{Binding ImageUrl}" Height="120" 
-                                          Stretch="UniformToFill" Margin="10,10,10,0"/>
+                                          Stretch="Uniform" Margin="10,10,10,0"/>
                                     <TextBlock Text="{Binding Name}" FontSize="16" 
                                               FontWeight="Bold" Foreground="White" 
                                               Margin="10,5" TextWrapping="Wrap"/>
